@@ -1343,6 +1343,12 @@ dissect_esp(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void* data _U_)
   proto_tree_add_item_ret_uint(esp_tree, hf_esp_sequence, tvb,
                       4, 4, ENC_BIG_ENDIAN, &sequence_number);
 
+#if 0
+  /* Add the sequence number to the protocol info as proto data */
+  p_remove_proto_data(pinfo->pool, pinfo, proto_esp, 0);
+  p_add_proto_data(pinfo->pool, pinfo, proto_esp, 0, (void *)sequence_number);
+#endif
+
   col_add_fstr(pinfo->cinfo, COL_INFO, "ESP (SPI=0x%08x)", spi);
 
   /* Sequence number analysis */
