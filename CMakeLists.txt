@@ -1441,6 +1441,7 @@ if(ENABLE_PLUGINS)
 	set(PLUGIN_SRC_DIRS
 		plugins/epan/ethercat
 		plugins/epan/gryphon
+		plugins/epan/iptfs
 		plugins/epan/irda
 		plugins/epan/mate
 		plugins/epan/opcua
