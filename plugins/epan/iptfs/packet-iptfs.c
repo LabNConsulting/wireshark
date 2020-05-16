@@ -71,6 +71,12 @@ static gint g_do_packet_dissection = 0;
 #define IPTFS_FLAG_VERSION (0x8000)
 #define IPTFS_FLAG_CC (0x4000)
 
+static const true_false_string _tfs_set_notset =
+{
+	"Set",
+	"Not set"
+};
+
 /*
  * We have 6 types of data blocks:
  *
@@ -319,10 +325,10 @@ proto_register_iptfs(void)
         {&hf_flags,
          {"Flags", "iptfs.flags", FT_UINT16, BASE_HEX, NULL, 0x0, NULL, HFILL}},
         {&hf_flags_v,
-         {"V", "iptfs.flags.v", FT_BOOLEAN, 16, TFS(&tfs_set_notset), 0x8000,
+         {"V", "iptfs.flags.v", FT_BOOLEAN, 16, TFS(&_tfs_set_notset), 0x8000,
           "Clear for first version of IPTFS protocol", HFILL}},
         {&hf_flags_cc,
-         {"CC", "iptfs.flags.cc", FT_BOOLEAN, 16, TFS(&tfs_set_notset), 0x4000,
+         {"CC", "iptfs.flags.cc", FT_BOOLEAN, 16, TFS(&_tfs_set_notset), 0x4000,
           "Set if extended congestion control head is present", HFILL}},
         {&hf_block_offset,
          {"Block Offset", "iptfs.block_offset", FT_UINT16, BASE_HEX, NULL, 0,
