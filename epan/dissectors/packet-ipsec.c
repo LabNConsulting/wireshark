@@ -2127,15 +2127,16 @@ dissect_esp(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void* data _U_)
 
       /* Make sure the packet is not truncated before the fields
        * we need to read to determine the encapsulated protocol */
-      if(tvb_bytes_exist(tvb, len - 14, 2))
+      if(tvb_bytes_exist(tvb, len - 2, 2))
       {
-        esp_pad_len = tvb_get_guint8(tvb, len - 14);
-        encapsulated_protocol = tvb_get_guint8(tvb, len - 13);
+        esp_pad_len = tvb_get_guint8(tvb, len - 2);
+        encapsulated_protocol = tvb_get_guint8(tvb, len - 1);
         dissector_handle = dissector_get_uint_handle(ip_dissector_table, encapsulated_protocol);
         if (dissector_handle) {
           saved_match_uint  = pinfo->match_uint;
           pinfo->match_uint = encapsulated_protocol;
-          next_tvb = tvb_new_subset_length(tvb, 8, len - 8 - 14 - esp_pad_len);
+          next_tvb = tvb_new_subset_length(tvb, 8, len - 8 /* SPI and Seq */
+                                                       - 2 /* esp_pad_len and encapsulated_protocol */);
           export_ipsec_pdu(dissector_handle, pinfo, next_tvb);
           call_dissector(dissector_handle, next_tvb, pinfo, tree);
           pinfo->match_uint = saved_match_uint;
@@ -2149,11 +2150,11 @@ dissect_esp(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, void* data _U_)
       if(esp_tree)
       {
         proto_tree_add_uint(esp_tree, hf_esp_pad_len, tvb,
-                            len - 14, 1,
+                            len - esp_iv_len - esp_auth_len - 2, 1,
                             esp_pad_len);
 
         proto_tree_add_uint_format(esp_tree, hf_esp_protocol, tvb,
-                                   len - 13, 1,
+                                   len - esp_iv_len - esp_auth_len - 1, 1,
                                    encapsulated_protocol,
                                    "Next header: %s (0x%02x)",
                                    ipprotostr(encapsulated_protocol), encapsulated_protocol);
