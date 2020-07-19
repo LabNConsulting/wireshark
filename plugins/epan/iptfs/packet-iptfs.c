@@ -385,8 +385,9 @@ proto_register_iptfs(void)
 void
 proto_reg_handoff_iptfs(void)
 {
-#define IP_PROTO_IPTFS 143
+#define IP_PROTO_IPTFS 144
     dissector_add_uint("ip.proto", IP_PROTO_IPTFS, find_dissector("iptfs"));
+    dissector_add_uint("ip.proto", 143, find_dissector("iptfs"));
     iptfs_flow_reg_handoff();
 }
 
